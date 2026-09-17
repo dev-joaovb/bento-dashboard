@@ -4,6 +4,7 @@ import { Plus, Trash2, Check, AlertCircle } from 'lucide-react'
 import { format, isToday, isTomorrow, isPast } from 'date-fns'
 
 type Priority = 'low' | 'medium' | 'high'
+const MAX_TASK_TITLE_LENGTH = 200
 
 const PRIORITY_COLORS: Record<Priority, string> = {
   low: 'text-green-500',
@@ -20,16 +21,29 @@ const PRIORITY_BG: Record<Priority, string> = {
 export function TasksWidget() {
   const { tasks, addTask, toggleTask, deleteTask, updateTaskPriority } = useDashboardStore()
   const [newTaskTitle, setNewTaskTitle] = useState('')
+  const [taskError, setTaskError] = useState('')
   const [newTaskPriority, setNewTaskPriority] = useState<Priority>('medium')
   const [newTaskDueDate, setNewTaskDueDate] = useState('')
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all')
   const [isAddingTask, setIsAddingTask] = useState(false)
 
   const handleAddTask = () => {
-    if (!newTaskTitle.trim()) return
-    
+    const trimmedTitle = newTaskTitle.trim()
+
+    if (!trimmedTitle) {
+      setTaskError('Task title cannot be empty.')
+      return
+    }
+
+    if (trimmedTitle.length > MAX_TASK_TITLE_LENGTH) {
+      setTaskError(`Task title cannot exceed ${MAX_TASK_TITLE_LENGTH} characters.`)
+      return
+    }
+
+    setTaskError('')
+
     const dueDate = newTaskDueDate ? new Date(newTaskDueDate) : undefined
-    addTask(newTaskTitle.trim(), newTaskPriority, dueDate)
+    addTask(trimmedTitle, newTaskPriority, dueDate)
     setNewTaskTitle('')
     setNewTaskPriority('medium')
     setNewTaskDueDate('')
@@ -94,6 +108,11 @@ export function TasksWidget() {
             className="input-field text-sm mb-2"
             autoFocus
           />
+          {taskError && (
+            <p className="text-xs text-red-500 mb-2">
+              {taskError}
+            </p>
+          )}
           <div className="flex gap-2 mb-2">
             <select
               value={newTaskPriority}

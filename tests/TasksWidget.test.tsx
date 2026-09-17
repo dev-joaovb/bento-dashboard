@@ -186,6 +186,24 @@ describe('TasksWidget', () => {
     expect(mockAddTask).not.toHaveBeenCalled()
   })
 
+  it('does not add tasks with titles longer than 200 characters', async () => {
+    render(<TasksWidget />)
+
+    const addButton = screen.getByLabelText('Add new task')
+    await userEvent.click(addButton)
+
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    await userEvent.type(input, 'a'.repeat(201))
+
+    const submitButton = screen.getByText('Add Task')
+    await userEvent.click(submitButton)
+
+    expect(mockAddTask).not.toHaveBeenCalled()
+    expect(
+      screen.getByText('Task title cannot exceed 200 characters.')
+    ).toBeInTheDocument()
+  })
+
   it('shows overdue indicator for past due dates', () => {
     const pastDate = new Date()
     pastDate.setDate(pastDate.getDate() - 1)
