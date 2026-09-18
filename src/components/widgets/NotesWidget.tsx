@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useDashboardStore } from '../../store/dashboardStore'
 import { Plus, Trash2, Edit2, Check, X } from 'lucide-react'
 
+// Note colors remain in JavaScript because they are stored with each note
+// and applied dynamically through the backgroundColor style property.
 const NOTE_COLORS = [
   '#fef3c7',
   '#fce7f3',
@@ -63,7 +65,7 @@ export function NotesWidget() {
         <h2 className="text-lg font-semibold">Sticky Notes</h2>
         <button
           onClick={() => setIsAddingNote(true)}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          className="p-2 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors"
           aria-label="Add new note"
         >
           <Plus className="w-5 h-5" />
@@ -71,7 +73,7 @@ export function NotesWidget() {
       </div>
 
       {isAddingNote && (
-        <div className="mb-4 p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+        <div className="mb-4 p-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)]">
           <textarea
             value={newNoteContent}
             onChange={(e) => setNewNoteContent(e.target.value)}
@@ -100,7 +102,7 @@ export function NotesWidget() {
             <div className="flex gap-2">
               <button
                 onClick={() => setIsAddingNote(false)}
-                className="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               >
                 Cancel
               </button>
@@ -118,7 +120,7 @@ export function NotesWidget() {
 
       <div className="flex-1 overflow-y-auto space-y-2">
         {notes.length === 0 ? (
-          <p className="text-center text-gray-400 dark:text-gray-500 text-sm py-8">
+          <p className="text-center text-[var(--text-muted)] text-sm py-8">
             No notes yet. Click + to add one!
           </p>
         ) : (
@@ -141,39 +143,39 @@ export function NotesWidget() {
                   <div className="flex gap-2 mt-2">
                     <button
                       onClick={handleSaveEdit}
-                      className="p-1 rounded hover:bg-white/50"
+                      className="note-action p-1 rounded"
                       aria-label="Save edit"
                     >
-                      <Check className="w-4 h-4 text-green-600" />
+                      <Check className="w-4 h-4" style={{ color: 'var(--success-color)' }} />
                     </button>
                     <button
                       onClick={handleCancelEdit}
-                      className="p-1 rounded hover:bg-white/50"
+                      className="note-action p-1 rounded"
                       aria-label="Cancel edit"
                     >
-                      <X className="w-4 h-4 text-red-600" />
+                      <X className="w-4 h-4" style={{ color: 'var(--error-color)' }} />
                     </button>
                   </div>
                 </div>
               ) : (
                 <>
-                  <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                  <p className="text-sm text-[var(--text-secondary)] whitespace-pre-wrap">
                     {note.content}
                   </p>
                   <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
                     <button
                       onClick={() => handleStartEdit(note.id, note.content)}
-                      className="p-1 rounded hover:bg-white/50"
+                      className="note-action p-1 rounded"
                       aria-label="Edit note"
                     >
-                      <Edit2 className="w-3 h-3 text-gray-600" />
+                      <Edit2 className="w-3 h-3 text-[var(--text-secondary)]" />
                     </button>
                     <button
                       onClick={() => deleteNote(note.id)}
-                      className="p-1 rounded hover:bg-white/50"
+                      className="note-action p-1 rounded"
                       aria-label="Delete note"
                     >
-                      <Trash2 className="w-3 h-3 text-red-500" />
+                      <Trash2 className="w-3 h-3 text-[var(--error-color)]" />
                     </button>
                   </div>
                 </>

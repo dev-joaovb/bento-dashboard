@@ -33,6 +33,9 @@
   --text-muted: #94a3b8;
   --border-color: #e2e8f0;
   --shadow-color: rgba(0, 0, 0, 0.1);
+  --success-color: #16a34a;
+  --error-color: #ef4444;
+  --hover-light: rgba(255, 255, 255, 0.5);
 }
 
 .dark {
@@ -136,4 +139,8 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.note-action:hover {
+  background-color: var(--hover-light);
 }
