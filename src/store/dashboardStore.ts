@@ -21,30 +21,167 @@ interface DashboardStore {
   weather: WeatherData | null
   preferences: UserPreferences
   
+  /**
+   * Adds a new widget to the dashboard.
+   *
+   * @param type - The type of widget to add.
+   * @param position - The position of the widget in the dashboard grid.
+   * @param size - The size of the widget.
+   * @returns void
+   */
   addWidget: (type: WidgetType, position: Position, size: WidgetSize) => void
+
+  /**
+   * Removes a widget from the dashboard.
+   *
+   * @param id - The unique identifier of the widget to remove.
+   * @returns void
+   */
   removeWidget: (id: string) => void
+
+  /**
+   * Updates the position of a widget.
+   *
+   * @param id - The unique identifier of the widget.
+   * @param position - The new position in the dashboard grid.
+   * @returns void
+   */
   updateWidgetPosition: (id: string, position: Position) => void
+
+  /**
+   * Updates the size of a widget.
+   *
+   * @param id - The unique identifier of the widget.
+   * @param size - The new size of the widget.
+   * @returns void
+   */
   updateWidgetSize: (id: string, size: WidgetSize) => void
   
+  /**
+   * Adds a new note to the dashboard.
+   *
+   * @param content - The content of the note.
+   * @param color - The color assigned to the note.
+   * @returns void
+   */
   addNote: (content: string, color: string) => void
+
+  /**
+   * Updates the content of an existing note.
+   *
+   * @param id - The unique identifier of the note.
+   * @param content - The new content of the note.
+   * @returns void
+   */
   updateNote: (id: string, content: string) => void
+
+  /**
+   * Removes a note from the dashboard.
+   *
+   * @param id - The unique identifier of the note to remove.
+   * @returns void
+   */
   deleteNote: (id: string) => void
   
+  /**
+   * Adds a new task to the dashboard.
+   *
+   * @param title - The title of the task.
+   * @param priority - The priority level of the task.
+   * @param dueDate - The optional due date of the task.
+   * @returns void
+   */
   addTask: (title: string, priority: Task['priority'], dueDate?: Date) => void
+
+  /**
+   * Toggles the completion status of a task.
+   *
+   * @param id - The unique identifier of the task.
+   * @returns void
+   */
   toggleTask: (id: string) => void
+
+  /**
+   * Removes a task from the dashboard.
+   *
+   * @param id - The unique identifier of the task to remove.
+   * @returns void
+   */
   deleteTask: (id: string) => void
+
+  /**
+   * Updates the priority of an existing task.
+   *
+   * @param id - The unique identifier of the task.
+   * @param priority - The new priority level of the task.
+   * @returns void
+   */
   updateTaskPriority: (id: string, priority: Task['priority']) => void
   
+  /**
+   * Starts the Pomodoro timer.
+   *
+   * @returns void
+   */
   startPomodoro: () => void
+
+  /**
+   * Pauses the Pomodoro timer.
+   *
+   * @returns void
+   */
   pausePomodoro: () => void
+
+  /**
+   * Resets the Pomodoro timer to the default work phase.
+   *
+   * @returns void
+   */
   resetPomodoro: () => void
+
+  /**
+   * Advances the Pomodoro timer by one second and handles phase transitions.
+   *
+   * @returns void
+   */
   tickPomodoro: () => void
+
+  /**
+   * Skips the current Pomodoro phase and advances to the next phase.
+   *
+   * @returns void
+   */
   skipPomodoroPhase: () => void
   
+  /**
+   * Updates the current weather data.
+   *
+   * @param data - The weather data to store.
+   * @returns void
+   */
   setWeather: (data: WeatherData) => void
-  
+
+  /**
+   * Updates the dashboard theme.
+   *
+   * @param theme - The theme to apply.
+   * @returns void
+   */
   setTheme: (theme: UserPreferences['theme']) => void
+
+  /**
+   * Updates the user's display name.
+   *
+   * @param name - The new user name.
+   * @returns void
+   */
   setUserName: (name: string) => void
+
+  /**
+   * Toggles dashboard animations on or off.
+   *
+   * @returns void
+   */
   toggleAnimations: () => void
 }
 

@@ -84,10 +84,22 @@ export const WIDGET_REGISTRY: Record<WidgetType, WidgetDefinition> = {
   },
 }
 
+/**
+ * Returns the React component associated with a widget type.
+ *
+ * @param type - The type of widget to retrieve.
+ * @returns The widget component, or undefined if the type is not registered.
+ */
 export const getWidgetComponent = (type: WidgetType) => {
   return WIDGET_REGISTRY[type]?.component
 }
 
+/**
+ * Returns the Tailwind CSS classes for a widget size.
+ *
+ * @param size - The size of the widget.
+ * @returns The CSS classes used to define the widget's grid dimensions.
+ */
 export const getWidgetSizeClasses = (size: WidgetSize) => {
   const sizeClasses: Record<WidgetSize, string> = {
     small: 'col-span-1 row-span-1',
