@@ -23,12 +23,13 @@ const WEATHER_ICONS: Record<string, React.ReactNode> = {
 
 const API_KEY = 'demo_key'
 const API_URL = 'https://api.openweathermap.org/data/2.5/weather'
+const DEFAULT_LOCATION = 'San Francisco'
 
 export function WeatherWidget() {
   const { weather, setWeather } = useDashboardStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [location, setLocation] = useState('San Francisco')
+  const [location, setLocation] = useState(DEFAULT_LOCATION)
 
   const fetchWeather = useCallback(async (city: string) => {
     setLoading(true)
@@ -66,9 +67,9 @@ export function WeatherWidget() {
 
   useEffect(() => {
     if (!weather) {
-      fetchWeather(location)
+      fetchWeather(DEFAULT_LOCATION)
     }
-  }, [])
+  }, [weather, fetchWeather])
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
