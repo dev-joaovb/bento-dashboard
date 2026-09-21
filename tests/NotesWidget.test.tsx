@@ -57,6 +57,24 @@ describe('NotesWidget', () => {
     expect(mockAddNote).toHaveBeenCalledWith('My new note', expect.any(String))
   })
 
+  it('preserves safe special characters when adding a note', async () => {
+    render(<NotesWidget />)
+
+    const addButton = screen.getByLabelText('Add new note')
+    await userEvent.click(addButton)
+
+    const textarea = screen.getByPlaceholderText('Write your note...')
+    await userEvent.type(textarea, '5 > 3 & 2 < 4')
+
+    const submitButton = screen.getByText('Add')
+    await userEvent.click(submitButton)
+
+    expect(mockAddNote).toHaveBeenCalledWith(
+      '5 > 3 & 2 < 4',
+      expect.any(String)
+    )
+  })
+
   it('does not add empty notes', async () => {
     render(<NotesWidget />)
     

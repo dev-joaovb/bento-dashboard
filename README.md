@@ -139,6 +139,10 @@ bento-dashboard/
 └── vite.config.ts              # Vite configuration
 ```
 
+### Security
+
+Note content is sanitized before being stored, removing HTML markup and script content. Notes are rendered as plain text to prevent user-supplied HTML from being persisted as executable markup.
+
 ## Running Tests
 
 ```bash

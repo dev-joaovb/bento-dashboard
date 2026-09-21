@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { v4 as uuidv4 } from 'uuid'
+import { sanitizeNoteContent } from '../utils/sanitize'
 import type { 
   WidgetConfig, 
   Note, 
@@ -115,22 +116,33 @@ export const useDashboardStore = create<DashboardStore>()(
       },
 
       addNote: (content, color) => {
+        const sanitizedContent = sanitizeNoteContent(content).trim()
+
+        if (!sanitizedContent) return
+
         const newNote: Note = {
           id: uuidv4(),
-          content,
+          content: sanitizedContent,
           color,
           createdAt: new Date(),
           updatedAt: new Date(),
         }
+
         set((state) => ({
           notes: [...state.notes, newNote],
         }))
       },
 
       updateNote: (id, content) => {
+        const sanitizedContent = sanitizeNoteContent(content).trim()
+
+        if (!sanitizedContent) return
+
         set((state) => ({
           notes: state.notes.map((n) =>
-            n.id === id ? { ...n, content, updatedAt: new Date() } : n
+            n.id === id
+              ? { ...n, content: sanitizedContent, updatedAt: new Date() }
+              : n
           ),
         }))
       },
