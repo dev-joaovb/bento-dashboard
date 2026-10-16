@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDashboardStore } from '../../store/dashboardStore'
+import { showNotification } from '../../utils/notifications'
 import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react'
 
 const POMODORO_SETTINGS = {
@@ -15,14 +16,46 @@ const MODE_LABELS = {
 }
 
 export function PomodoroWidget() {
-  const { pomodoro, startPomodoro, pausePomodoro, resetPomodoro, tickPomodoro, skipPomodoroPhase } = useDashboardStore()
+  const {
+    pomodoro,
+    preferences,
+    startPomodoro,
+    pausePomodoro,
+    resetPomodoro,
+    tickPomodoro,
+    skipPomodoroPhase,
+  } = useDashboardStore()
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const pomodoroRef = useRef(pomodoro)
+  const notificationsEnabledRef = useRef(preferences.notificationsEnabled)
+
+  useEffect(() => {
+    pomodoroRef.current = pomodoro
+    notificationsEnabledRef.current = preferences.notificationsEnabled
+  }, [pomodoro, preferences.notificationsEnabled])
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [customWorkDuration, setCustomWorkDuration] = useState(25)
 
   useEffect(() => {
     if (pomodoro.isRunning) {
       intervalRef.current = setInterval(() => {
+        const currentPomodoro = pomodoroRef.current
+        const notificationsEnabled = notificationsEnabledRef.current
+
+        if (currentPomodoro.isRunning && currentPomodoro.timeLeft <= 1) {
+          if (notificationsEnabled) {
+            const isWorkSession = currentPomodoro.mode === 'work'
+            showNotification(
+              isWorkSession ? 'Focus session complete' : 'Break complete',
+              {
+                body: isWorkSession
+                  ? 'Great work! Time for a break.'
+                  : 'Your break is over. Ready to focus again?',
+              },
+            )
+          }
+        }
+
         tickPomodoro()
       }, 1000)
     } else if (intervalRef.current) {

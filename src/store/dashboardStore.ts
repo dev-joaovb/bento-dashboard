@@ -46,6 +46,7 @@ interface DashboardStore {
   setTheme: (theme: UserPreferences['theme']) => void
   setUserName: (name: string) => void
   toggleAnimations: () => void
+  toggleNotifications: () => void
 }
 
 const defaultWidgets: WidgetConfig[] = [
@@ -61,6 +62,7 @@ const defaultPreferences: UserPreferences = {
   userName: 'User',
   dashboardLayout: 'grid',
   animationsEnabled: true,
+  notificationsEnabled: false,
 }
 
 const defaultPomodoro: PomodoroState = {
@@ -289,6 +291,15 @@ export const useDashboardStore = create<DashboardStore>()(
           preferences: { 
             ...state.preferences, 
             animationsEnabled: !state.preferences.animationsEnabled 
+          },
+        }))
+      },
+
+      toggleNotifications: () => {
+        set((state) => ({
+          preferences: {
+            ...state.preferences,
+            notificationsEnabled: !state.preferences.notificationsEnabled,
           },
         }))
       },

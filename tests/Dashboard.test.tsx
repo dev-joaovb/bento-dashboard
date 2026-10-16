@@ -16,6 +16,7 @@ describe('Dashboard', () => {
     vi.clearAllMocks()
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       widgets: [],
+      tasks: [],
       preferences: { userName: 'Test User', theme: 'light', animationsEnabled: true },
       addWidget: mockAddWidget,
       removeWidget: mockRemoveWidget,
@@ -38,17 +39,17 @@ describe('Dashboard', () => {
   it('opens add widget modal when button is clicked', async () => {
     render(<Dashboard />)
     
-    const addButton = screen.getByText('Add Widget')
+    const addButton = screen.getByRole('button', { name: 'Add new widget' })
     await userEvent.click(addButton)
 
     expect(screen.getByRole('dialog')).toBeInTheDocument()
-    expect(screen.getByText('Add Widget')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Add Widget' })).toBeInTheDocument()
   })
 
   it('displays widget types in add modal', async () => {
     render(<Dashboard />)
     
-    const addButton = screen.getByText('Add Widget')
+    const addButton = screen.getByRole('button', { name: 'Add new widget' })
     await userEvent.click(addButton)
 
     expect(screen.getByText('Clock')).toBeInTheDocument()
@@ -61,7 +62,7 @@ describe('Dashboard', () => {
   it('closes add widget modal when cancel is clicked', async () => {
     render(<Dashboard />)
     
-    const addButton = screen.getByText('Add Widget')
+    const addButton = screen.getByRole('button', { name: 'Add new widget' })
     await userEvent.click(addButton)
 
     const cancelButton = screen.getByText('Cancel')
@@ -88,6 +89,7 @@ describe('Dashboard', () => {
         { id: '1', type: 'clock', position: { x: 0, y: 0 }, size: 'medium' },
         { id: '2', type: 'tasks', position: { x: 1, y: 0 }, size: 'medium' },
       ],
+      tasks: [],
       preferences: { userName: 'Test User', theme: 'light', animationsEnabled: true },
       addWidget: mockAddWidget,
       removeWidget: mockRemoveWidget,
@@ -95,7 +97,7 @@ describe('Dashboard', () => {
 
     render(<Dashboard />)
     
-    expect(screen.getByText('Focus Time')).toBeInTheDocument()
+    expect(screen.getByText(/Good Morning|Good Afternoon|Good Evening/)).toBeInTheDocument()
     expect(screen.getByText('Tasks')).toBeInTheDocument()
   })
 
@@ -104,6 +106,7 @@ describe('Dashboard', () => {
       widgets: [
         { id: '1', type: 'clock', position: { x: 0, y: 0 }, size: 'medium' },
       ],
+      tasks: [],
       preferences: { userName: 'Test User', theme: 'light', animationsEnabled: true },
       addWidget: mockAddWidget,
       removeWidget: mockRemoveWidget,
@@ -111,7 +114,7 @@ describe('Dashboard', () => {
 
     render(<Dashboard />)
     
-    const widgetCard = screen.getByText('Focus Time').closest('.relative')
+    const widgetCard = screen.getByText(/Good Morning|Good Afternoon|Good Evening/).closest('.relative')
     if (widgetCard) {
       fireEvent.mouseEnter(widgetCard)
     }

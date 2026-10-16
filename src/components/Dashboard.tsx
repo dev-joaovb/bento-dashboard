@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useDashboardStore } from '../store/dashboardStore'
+import { requestNotificationPermission } from '../utils/notifications'
 import { ThemeToggle } from './ThemeToggle'
 import { WIDGET_REGISTRY, getWidgetComponent, getWidgetSizeClasses, AVAILABLE_WIDGETS } from './WidgetRegistry'
 import { Plus, X, Settings, LayoutGrid, Grid3X3 } from 'lucide-react'
@@ -154,7 +155,36 @@ function SettingsPanel({
   isOpen: boolean
   onClose: () => void 
 }) {
-  const { preferences, setUserName, toggleAnimations } = useDashboardStore()
+  const {
+    preferences,
+    setUserName,
+    toggleAnimations,
+    toggleNotifications,
+  } = useDashboardStore()
+  const [notificationMessage, setNotificationMessage] = useState('')
+
+  const handleNotificationsChange = async (enabled: boolean) => {
+    setNotificationMessage('')
+
+    if (!enabled) {
+      toggleNotifications()
+      setNotificationMessage('Notifications disabled.')
+      return
+    }
+
+    const permission = await requestNotificationPermission()
+
+    if (permission === 'granted') {
+      if (!preferences.notificationsEnabled) {
+        toggleNotifications()
+      }
+      setNotificationMessage('Notifications enabled.')
+    } else if (permission === 'unsupported') {
+      setNotificationMessage('Notifications are not supported by this browser.')
+    } else {
+      setNotificationMessage('Permission denied. Enable notifications in your browser settings.')
+    }
+  }
 
   if (!isOpen) return null
 
@@ -208,6 +238,26 @@ function SettingsPanel({
               />
               <span className="text-sm">Enable animations</span>
             </label>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={preferences.notificationsEnabled}
+                onChange={(event) => void handleNotificationsChange(event.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-primary-500 focus:ring-primary-500"
+              />
+              <span className="text-sm">Enable notifications</span>
+            </label>
+            <p className="mt-1 ml-7 text-xs text-gray-500 dark:text-gray-400">
+              Receive reminders for Pomodoro sessions and tasks.
+            </p>
+            {notificationMessage && (
+              <p role="status" className="mt-2 ml-7 text-xs text-gray-500 dark:text-gray-400">
+                {notificationMessage}
+              </p>
+            )}
           </div>
         </div>
 

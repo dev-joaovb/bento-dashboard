@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { ClockWidget } from '../src/components/widgets/ClockWidget'
 
 vi.mock('../src/store/dashboardStore', () => ({
@@ -64,7 +63,7 @@ describe('ClockWidget', () => {
     expect(screen.getByText('14:30:00')).toBeInTheDocument()
 
     const toggleButton = screen.getByText('Switch to 12-hour')
-    await userEvent.click(toggleButton)
+    fireEvent.click(toggleButton)
 
     expect(screen.getByText('02:30:00 PM')).toBeInTheDocument()
   })
@@ -77,7 +76,9 @@ describe('ClockWidget', () => {
     
     expect(screen.getByText('10:30:00')).toBeInTheDocument()
 
-    vi.advanceTimersByTime(1000)
+    act(() => {
+      vi.advanceTimersByTime(1000)
+    })
     
     expect(screen.getByText('10:30:01')).toBeInTheDocument()
   })

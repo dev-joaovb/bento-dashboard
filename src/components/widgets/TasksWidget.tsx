@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useDashboardStore } from '../../store/dashboardStore'
+import { showNotification } from '../../utils/notifications'
 import { Plus, Trash2, Check, AlertCircle } from 'lucide-react'
 import { format, isToday, isTomorrow, isPast } from 'date-fns'
 
@@ -18,12 +19,65 @@ const PRIORITY_BG: Record<Priority, string> = {
 }
 
 export function TasksWidget() {
-  const { tasks, addTask, toggleTask, deleteTask, updateTaskPriority } = useDashboardStore()
+  const {
+    tasks,
+    preferences,
+    addTask,
+    toggleTask,
+    deleteTask,
+    updateTaskPriority,
+  } = useDashboardStore()
+  const notifiedTaskKeys = useRef(new Set<string>())
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [newTaskPriority, setNewTaskPriority] = useState<Priority>('medium')
   const [newTaskDueDate, setNewTaskDueDate] = useState('')
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all')
   const [isAddingTask, setIsAddingTask] = useState(false)
+
+  useEffect(() => {
+    if (!preferences.notificationsEnabled) return
+
+    const checkDueTasks = () => {
+      const now = new Date()
+      const today = [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, '0'),
+        String(now.getDate()).padStart(2, '0'),
+      ].join('-')
+
+      tasks.forEach((task) => {
+        if (task.completed || !task.dueDate) return
+
+        const dueDate = new Date(task.dueDate)
+        if (Number.isNaN(dueDate.getTime())) return
+
+        const dueKey = dueDate.toISOString().slice(0, 10)
+        if (dueKey > today) return
+
+        const reminderKey = `${task.id}-${dueKey}-${today}`
+        if (notifiedTaskKeys.current.has(reminderKey)) return
+
+        const overdue = dueKey < today
+        const notification = showNotification(
+          overdue ? 'Overdue task' : 'Task due today',
+          {
+            body: overdue
+              ? `"${task.title}" is overdue.`
+              : `"${task.title}" is due today.`,
+          },
+        )
+
+        if (notification) {
+          notifiedTaskKeys.current.add(reminderKey)
+        }
+      })
+    }
+
+    checkDueTasks()
+    const intervalId = setInterval(checkDueTasks, 60_000)
+
+    return () => clearInterval(intervalId)
+  }, [tasks, preferences.notificationsEnabled])
 
   const handleAddTask = () => {
     if (!newTaskTitle.trim()) return

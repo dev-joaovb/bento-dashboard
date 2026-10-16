@@ -69,6 +69,7 @@ export interface UserPreferences {
   userName: string;
   dashboardLayout: 'grid' | 'flex';
   animationsEnabled: boolean;
+  notificationsEnabled: boolean;
 }
 
 export interface DashboardState {

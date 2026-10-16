@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { useDashboardStore } from '../src/store/dashboardStore'
 import { PomodoroWidget } from '../src/components/widgets/PomodoroWidget'
 
@@ -27,6 +26,7 @@ describe('PomodoroWidget', () => {
     vi.useFakeTimers()
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       pomodoro: defaultPomodoroState,
+      preferences: { notificationsEnabled: false },
       startPomodoro: mockStartPomodoro,
       pausePomodoro: mockPausePomodoro,
       resetPomodoro: mockResetPomodoro,
@@ -52,7 +52,7 @@ describe('PomodoroWidget', () => {
     render(<PomodoroWidget />)
     
     const playButton = screen.getByLabelText('Start timer')
-    await userEvent.click(playButton)
+    fireEvent.click(playButton)
 
     expect(mockStartPomodoro).toHaveBeenCalled()
   })
@@ -60,6 +60,7 @@ describe('PomodoroWidget', () => {
   it('pauses timer when pause button is clicked', async () => {
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       pomodoro: { ...defaultPomodoroState, isRunning: true },
+      preferences: { notificationsEnabled: false },
       startPomodoro: mockStartPomodoro,
       pausePomodoro: mockPausePomodoro,
       resetPomodoro: mockResetPomodoro,
@@ -70,7 +71,7 @@ describe('PomodoroWidget', () => {
     render(<PomodoroWidget />)
     
     const pauseButton = screen.getByLabelText('Pause timer')
-    await userEvent.click(pauseButton)
+    fireEvent.click(pauseButton)
 
     expect(mockPausePomodoro).toHaveBeenCalled()
   })
@@ -79,7 +80,7 @@ describe('PomodoroWidget', () => {
     render(<PomodoroWidget />)
     
     const resetButton = screen.getByLabelText('Reset timer')
-    await userEvent.click(resetButton)
+    fireEvent.click(resetButton)
 
     expect(mockResetPomodoro).toHaveBeenCalled()
   })
@@ -88,7 +89,7 @@ describe('PomodoroWidget', () => {
     render(<PomodoroWidget />)
     
     const skipButton = screen.getByLabelText('Skip to next phase')
-    await userEvent.click(skipButton)
+    fireEvent.click(skipButton)
 
     expect(mockSkipPomodoroPhase).toHaveBeenCalled()
   })
@@ -96,6 +97,7 @@ describe('PomodoroWidget', () => {
   it('displays short break time correctly', () => {
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       pomodoro: { ...defaultPomodoroState, mode: 'shortBreak', timeLeft: 5 * 60 },
+      preferences: { notificationsEnabled: false },
       startPomodoro: mockStartPomodoro,
       pausePomodoro: mockPausePomodoro,
       resetPomodoro: mockResetPomodoro,
@@ -112,6 +114,7 @@ describe('PomodoroWidget', () => {
   it('displays long break time correctly', () => {
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       pomodoro: { ...defaultPomodoroState, mode: 'longBreak', timeLeft: 15 * 60 },
+      preferences: { notificationsEnabled: false },
       startPomodoro: mockStartPomodoro,
       pausePomodoro: mockPausePomodoro,
       resetPomodoro: mockResetPomodoro,
@@ -128,6 +131,7 @@ describe('PomodoroWidget', () => {
   it('displays sessions completed count', () => {
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       pomodoro: { ...defaultPomodoroState, sessionsCompleted: 3 },
+      preferences: { notificationsEnabled: false },
       startPomodoro: mockStartPomodoro,
       pausePomodoro: mockPausePomodoro,
       resetPomodoro: mockResetPomodoro,
@@ -144,7 +148,7 @@ describe('PomodoroWidget', () => {
     render(<PomodoroWidget />)
     
     const settingsButton = screen.getByText('Settings')
-    await userEvent.click(settingsButton)
+    fireEvent.click(settingsButton)
 
     expect(screen.getByText('Work Duration (minutes)')).toBeInTheDocument()
   })
@@ -153,10 +157,10 @@ describe('PomodoroWidget', () => {
     render(<PomodoroWidget />)
     
     const settingsButton = screen.getByText('Settings')
-    await userEvent.click(settingsButton)
+    fireEvent.click(settingsButton)
     expect(screen.getByText('Hide Settings')).toBeInTheDocument()
 
-    await userEvent.click(screen.getByText('Hide Settings'))
+    fireEvent.click(screen.getByText('Hide Settings'))
     expect(screen.getByText('Settings')).toBeInTheDocument()
   })
 })

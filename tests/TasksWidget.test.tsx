@@ -18,6 +18,7 @@ describe('TasksWidget', () => {
     vi.clearAllMocks()
     ;(useDashboardStore as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
       tasks: [],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
@@ -41,6 +42,7 @@ describe('TasksWidget', () => {
         { id: '1', title: 'Task 1', completed: false, priority: 'medium', createdAt: new Date() },
         { id: '2', title: 'Task 2', completed: true, priority: 'low', createdAt: new Date() },
       ],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
@@ -93,6 +95,7 @@ describe('TasksWidget', () => {
       tasks: [
         { id: '1', title: 'Test task', completed: false, priority: 'medium', createdAt: new Date() },
       ],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
@@ -112,6 +115,7 @@ describe('TasksWidget', () => {
       tasks: [
         { id: '1', title: 'Test task', completed: false, priority: 'medium', createdAt: new Date() },
       ],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
@@ -132,6 +136,7 @@ describe('TasksWidget', () => {
         { id: '1', title: 'Active task', completed: false, priority: 'medium', createdAt: new Date() },
         { id: '2', title: 'Completed task', completed: true, priority: 'low', createdAt: new Date() },
       ],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
@@ -161,6 +166,7 @@ describe('TasksWidget', () => {
         { id: '2', title: 'Medium priority', completed: false, priority: 'medium', createdAt: new Date() },
         { id: '3', title: 'Low priority', completed: false, priority: 'low', createdAt: new Date() },
       ],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
@@ -194,6 +200,7 @@ describe('TasksWidget', () => {
       tasks: [
         { id: '1', title: 'Overdue task', completed: false, priority: 'high', dueDate: pastDate, createdAt: new Date() },
       ],
+      preferences: { notificationsEnabled: false },
       addTask: mockAddTask,
       toggleTask: mockToggleTask,
       deleteTask: mockDeleteTask,
